@@ -1,6 +1,6 @@
 import express from 'express';
 import { registerUser, loginUser } from '../controllers/userController.js';
-import { getInsurance } from '../controllers/insuranceController.js';
+import { addInsurance, getInsurance } from '../controllers/insuranceController.js';
 
 const router = express.Router();
 
@@ -9,7 +9,10 @@ router.post('/login', loginUser);
 
 router.post('/register', registerUser);
 
-// Insueance GET Route
+// Insurance GET Route
 router.get('/insurance', getInsurance);
+
+// Add Insurance
+router.post('/insurance', addInsurance);
 
 export default router;

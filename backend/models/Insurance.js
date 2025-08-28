@@ -1,9 +1,9 @@
 // backend/models/User.js
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const InsuranceSchema = new mongoose.Schema({
-  insurtanceId: {
+  insuranceId: {
     type: Number,
     required: true,
     unique: true
@@ -16,4 +16,4 @@ const InsuranceSchema = new mongoose.Schema({
 
 const User = mongoose.model('Insurance', InsuranceSchema);
 
-module.exports = User;
+export default User;

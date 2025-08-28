@@ -1,9 +1,9 @@
 // backend/controllers/userController.js
 
-const User = require('../models/User');
+import User from '../models/User.js';
 
 // Register controller
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { username, password } = req.body;
   try {
     const newUser = new User({ username, password });
@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
 };
 
 // Login controller
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });
@@ -29,9 +29,4 @@ const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error });
   }
-};
-
-module.exports = {
-  registerUser,
-  loginUser,
 };

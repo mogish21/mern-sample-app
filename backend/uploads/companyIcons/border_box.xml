@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke android:width="0.5dp"
+        android:color="@color/colorAccent" />
+    <solid android:color="@color/colorAccent">
+    </solid>
+</shape>-->
+<!--
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    &lt;!&ndash; Background Color &ndash;&gt;
+    <solid android:color="#ffffff" />
+
+    &lt;!&ndash; Border Color &ndash;&gt;
+    <stroke android:width="2dp" android:color="@color/colorAccent" />
+
+    &lt;!&ndash; Round Corners &ndash;&gt;
+    <corners android:radius="0dp" />
+
+</shape>
+-->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/white" />
+    <stroke
+        android:width="1dp"
+        android:color="@color/black300" />
+</shape>

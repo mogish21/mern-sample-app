@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="-13px"
+        android:left="-13px"
+        android:top="-13px">
+        <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="2px"
+                android:color="@color/proposer_name_color"
+                android:dashWidth="10px"
+                android:dashGap="10px" />
+        </shape>
+    </item>
+</layer-list>

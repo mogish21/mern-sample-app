@@ -1,8 +1,8 @@
 // backend/controllers/InsuranceController.js
-const Insurance = require('../models/Insurance');
+import Insurance from '../models/Insurance.js';
 
 // get Insurance controller
-const getInsurance = async (req, res) => {
+export const getInsurance = async (req, res) => {
   try {
     const insurance = await Insurance.find();
     if (!insurance) {
@@ -15,6 +15,13 @@ const getInsurance = async (req, res) => {
   }
 };
 
-module.exports = {
-  getInsurance,
+export const addInsurance = async (req, res) => {
+  const { insuranceId, name } = req.body;
+  try {
+    const newInsurance = new Insurance({ insuranceId, name });
+    await newInsurance.save();
+    res.status(201).json({ message: 'Insurance added successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error add insurance', error });
+  }
 };
