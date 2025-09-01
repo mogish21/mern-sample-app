@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setCompanies, setSelectedCompany } from "../redux/actions"; // Import the Redux actions
+import { useNavigate } from "react-router-dom";
 import api from "../api"; // your axios or fetch wrapper
 import { Company } from "../types";
 
-interface Props {
-  onSelect: (company: Company) => void;
-}
+const CompanyList: React.FC<{}> = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-const CompanyList: React.FC<Props> = ({ onSelect }) => {
-  const [companies, setCompanies] = useState<Company[]>([]);
+  const companies = useSelector((state: any) => state.company.companies); // Access companies from Redux store
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
+  // Fetch companies only if not already loaded
   useEffect(() => {
-    fetchCompanies();
-  }, []);
+    if (!companies || companies.length === 0) {  // Only fetch if companies are not loaded
+      fetchCompanies();
+    }
+  }, [companies]); // Only run when companies array is empty
 
   const fetchCompanies = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/companies/"); // API endpoint returning list of companies
-      // Map API response to Company type
-      const mappedCompanies: Company[] = response.data.companies;
-      setCompanies(mappedCompanies);
+      const response = await api.get("/companies"); // API endpoint returning list of companies
+      // Dispatch action to store companies in Redux
+      dispatch(setCompanies(response.data.companies));
     } catch (error) {
       console.error("Error fetching companies", error);
     } finally {
@@ -30,17 +34,24 @@ const CompanyList: React.FC<Props> = ({ onSelect }) => {
   };
 
   // Filter companies based on search input
-  const filteredCompanies = companies.filter((c) =>
+  const filteredCompanies = companies?.filter((c: Company) =>
     c.CompanyName.toLowerCase().includes(search.toLowerCase())
-  );
+  ) || [];
 
-  const publicCompanies = filteredCompanies.filter((c) => c.isPublic === true);
-  const privateCompanies = filteredCompanies.filter((c) => !c.isPublic);
+  const publicCompanies = filteredCompanies.filter((c: Company) => c.isPublic === true);
+  const privateCompanies = filteredCompanies.filter((c: Company) => !c.isPublic);
+
+  const handleCompanyClick = (company: Company) => {
+    // Dispatch the selected company to Redux
+    dispatch(setSelectedCompany(company));
+    // Navigate to the insurance page for the selected company after the state update
+    setTimeout(() => navigate("/insurance"), 100); // Give Redux state time to update
+  };
 
   const renderCompanyCard = (c: Company) => (
     <div
       key={c.CompanyGUID}
-      onClick={() => onSelect(c)}
+      onClick={() => handleCompanyClick(c)} // Dispatch company to Redux and navigate
       style={{
         cursor: "pointer",
         border: "1px solid #ccc",
@@ -51,7 +62,11 @@ const CompanyList: React.FC<Props> = ({ onSelect }) => {
         background: "#f9f9f9",
       }}
     >
-      <img src={`http://localhost:5000/uploads/companyIcons/${c.CompanyIconName}${c.CompanyGUID === 3 ? ".jpg" : ".png"}`} alt={c.CompanyName} style={{ width: "50px", borderRadius: "50%" }} />
+      <img
+        src={`http://localhost:5000/uploads/companyIcons/${c.CompanyIconName}${c.CompanyGUID === 3 ? ".jpg" : ".png"}`}
+        alt={c.CompanyName}
+        style={{ width: "50px", borderRadius: "50%" }}
+      />
       <h4 style={{ fontSize: "0.9rem", marginTop: "8px" }}>{c.CompanyName}</h4>
     </div>
   );
@@ -79,7 +94,7 @@ const CompanyList: React.FC<Props> = ({ onSelect }) => {
       <div style={{ marginBottom: "30px" }}>
         <h3>Public Companies</h3>
         <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-          {publicCompanies.length > 0 ? publicCompanies.map(renderCompanyCard) : <p>No companies found.</p>}
+          {publicCompanies.length > 0 ? publicCompanies.map(renderCompanyCard) : <p>No public companies found.</p>}
         </div>
       </div>
 
@@ -87,7 +102,7 @@ const CompanyList: React.FC<Props> = ({ onSelect }) => {
       <div style={{ marginBottom: "30px" }}>
         <h3>Private Companies</h3>
         <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-          {privateCompanies.length > 0 ? privateCompanies.map(renderCompanyCard) : <p>No companies found.</p>}
+          {privateCompanies.length > 0 ? privateCompanies.map(renderCompanyCard) : <p>No private companies found.</p>}
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/authActions";
 import api from "../api";
-import axios from "axios";
 import { User } from "../types";
 
 interface AuthFormProps {
@@ -8,6 +9,7 @@ interface AuthFormProps {
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -22,17 +24,20 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
         username,
         password,
       });
+
       setMessage(response.data.message);
 
       if (isLogin) {
-        onLogin(response.data);
+        const userData = { username, password };
+        dispatch(login(userData));  // Login action via Redux
+        onLogin(userData); // Call onLogin prop if needed
       }
     } catch (error: any) {
-      // Type assertion for unknown error
-      if (axios.isAxiosError(error)) {
+      // Handle axios error gracefully
+      if (error.response) {
         setMessage(error.response?.data?.message || "Something went wrong");
       } else {
-        setMessage("Something went wrong");
+        setMessage("Network error occurred. Please try again.");
       }
     }
   };
@@ -93,7 +98,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
       >
         Switch to {isLogin ? "Register" : "Login"}
       </button>
-      {message && <p style={{ color: "green" }}>{message}</p>}
+      {message && <p style={{ color: message.includes("error") ? "red" : "green" }}>{message}</p>}
     </div>
   );
 };

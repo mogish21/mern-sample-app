@@ -2,6 +2,7 @@
 
 export interface User {
     username: string;
+    password: string;
     token?: string; // optional JWT token if your backend sends one
   }
   
@@ -42,4 +43,15 @@ export interface Company {
   isPublic: boolean;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface Policy {
+  PolicyTypeGUID: number;
+  CompanyGUID: number;
+  PolicyName: string;
+  PolicyImageIconName: string;
+  ShortNoteMessage: string;
+  isActive: number;
+  SortPositionNumber: number;
+  PremiumRateCurrency: string;
 }
